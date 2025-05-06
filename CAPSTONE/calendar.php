@@ -1,3 +1,7 @@
+<?php
+include "myconnector.php";
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,7 +29,7 @@
             <input type="text" id="search" placeholder="Discover" class="search" />
             <div class="student-info">
                 <span>Student</span>
-                <img src="/Images/student.png" alt="User Icon" class="user-icon">
+                <img src="Images/student.png" alt="User Icon" class="user-icon">
             </div>
           </div>
         </nav>
@@ -39,11 +43,11 @@
     <!--Side Bar-->
     <div class="sidebar">
         <ul>
-            <li><a href="#"><img src="/Images/calendar-month-svgrepo-com.svg" alt="Calendar Icon"> Calendar</a></li>
-            <li><a href="#"><img src="/Images/book-svgrepo-com.svg" alt="Modules Icon"> Modules</a></li>
-            <li><a href="#"><img src="/Images/user-svgrepo-com.svg" alt="Tutors Icon"> Tutors</a></li>
-            <li><a href="#"><img src="/Images/progress-svgrepo-com.svg" alt="Progress Icon"> Progress</a></li>
-            <li><a href="#"><img src="/Images/settings-2-svgrepo-com.svg" alt="Settings Icon"> Settings</a></li>
+            <li><a href="#"><img src="Images/calendar-month-svgrepo-com.svg" alt="Calendar Icon"> Calendar</a></li>
+            <li><a href="#"><img src="Images/book-svgrepo-com.svg" alt="Modules Icon"> Modules</a></li>
+            <li><a href="#"><img src="Images/user-svgrepo-com.svg" alt="Tutors Icon"> Tutors</a></li>
+            <li><a href="#"><img src="Images/progress-svgrepo-com.svg" alt="Progress Icon"> Progress</a></li>
+            <li><a href="#"><img src="Images/settings-2-svgrepo-com.svg" alt="Settings Icon"> Settings</a></li>
         </ul>
     </div>
 
