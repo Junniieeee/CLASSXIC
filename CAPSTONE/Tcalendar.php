@@ -1,3 +1,7 @@
+<?php
+include "myconnector.php";
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,9 +43,9 @@
     <!--Side Bar-->
     <div class="sidebar">
         <ul>
-          <li><a href="#"><img src="/CAPSTONE/Images/calendar-month-svgrepo-com.svg" alt="Calendar Icon"> Calendar</a></li>
-          <li><a href="#"><img src="/CAPSTONE/Images/book-svgrepo-com.svg" alt="Modules Icon"> Modules</a></li>
-          <li><a href="#"><img src="/CAPSTONE/Images/user-svgrepo-com.svg" alt="Tutors Icon"> Students</a></li>
+          <li><a href="#"><img src="Images/calendar-month-svgrepo-com.svg" alt="Calendar Icon"> Calendar</a></li>
+          <li><a href="#"><img src="Images/book-svgrepo-com.svg" alt="Modules Icon"> Modules</a></li>
+          <li><a href="#"><img src="Images/user-svgrepo-com.svg" alt="Tutors Icon"> Students</a></li>
 
             <li><a href="#"><img src="Images/settings-2-svgrepo-com.svg" alt="Settings Icon"> Settings</a></li>
         </ul>

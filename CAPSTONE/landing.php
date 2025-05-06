@@ -1,3 +1,7 @@
+<?php
+include "myconnector.php";
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -41,7 +45,7 @@
           </div>
     
           <div class="right-section">
-            <img src="/CAPSTONE/Images/main.png" alt="Students learning together" class="students-image" />
+            <img src="Images/main.png" alt="Students learning together" class="students-image" />
             <h3 class="curve-text">Learning Connect Us All.</h3>
           </div>
         </main>
