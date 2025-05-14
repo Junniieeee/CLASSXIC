@@ -96,14 +96,6 @@ body {
     height: 30px;
     padding-right: 20px; /* Space between icon and text */
 }
-#calendar {
-    max-width: 1000px;
-    margin: 20px auto;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
 .container h1 {
     display: flex;               /* Use flexbox */
     flex-direction: column;      /* Stack children vertically */
@@ -147,6 +139,50 @@ body {
     padding: 10px; /* Add some padding */
     border-radius: 5px; /* Rounded corners */
     border-left: 2px solid #ffcc00; /* Left border for visual separation */
+}
+.progress-container {
+    max-width: 800px;
+    margin: 20px auto;
+    font-family: 'OpenDyslexic', sans-serif;
+}
+.progress-container h1 {
+    display: flex;               /* Use flexbox */
+    flex-direction: column;      /* Stack children vertically */
+    align-items: center;         /* Center items horizontally */
+    justify-content: center;     /* Center items vertically */
+    max-width: 100%;            /* Ensure it doesn't exceed the width */
+    margin-top: 100px;          /* Maintain the top margin */
+}
+.progress-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.progress-item h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #333;
+}
+.progress-item p {
+    margin: 5px 0;
+    color: #555;
+}
+.progress-item .view-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 12px;
+    background-color: #3498db;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+}
+.progress-item .view-btn:hover {
+    background-color: #2980b9;
 }
 @media  (max-width: 768px) {
     .sidebar{

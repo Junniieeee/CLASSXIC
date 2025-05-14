@@ -7,54 +7,85 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="calendar.css">
     <title>Document</title>
+    <link rel="stylesheet" href="calendar.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Navbar -->
-        <nav class="navbar">
-          <div class="nav-left">
-            <a href="#">Home</a>
-            <a href="#">Features</a>
-            <a href="#">About Us</a>
-          </div>
-          <div class="nav-center">
-            <h1>ClassXic</h1>
-          </div>
-          <div class="nav-right">
-            <label for="search" class="visually-hidden">Search</label>
-            <input type="text" id="search" placeholder="Discover" class="search" />
-            <div class="student-info">
-                <span>Student</span>
-                <img src="Images/student.png" alt="User Icon" class="user-icon">
-            </div>
-          </div>
-        </nav>
-        
-        <!--Calendar Section-->
-        <div class="container">
-          <h1 class="text-center mb-4">My FullCalendar</h1>
-          <div id="calendar"></div>
-        </div>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <!-- Burger Menu -->
+    <div class="burger-menu" onclick="toggleSidebar()">
+      <div></div>
+      <div></div>
+      <div></div>
     </div>
-    <!--Side Bar-->
-    <div class="sidebar">
-        <ul>
-            <li><a href="#"><img src="Images/calendar-month-svgrepo-com.svg" alt="Calendar Icon"> Calendar</a></li>
-            <li><a href="#"><img src="Images/book-svgrepo-com.svg" alt="Modules Icon"> Modules</a></li>
-            <li><a href="#"><img src="Images/user-svgrepo-com.svg" alt="Tutors Icon"> Tutors</a></li>
-            <li><a href="#"><img src="Images/progress-svgrepo-com.svg" alt="Progress Icon"> Progress</a></li>
-            <li><a href="#"><img src="Images/settings-2-svgrepo-com.svg" alt="Settings Icon"> Settings</a></li>
-        </ul>
+    <!-- Title -->
+    <div class="nav-center">Classix</div>
+    <!-- User Info -->
+    <div class="user-info">
+      <img src="Images/user-svgrepo-com.svg" alt="User Icon">
+    </div>
+  </nav>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <ul>
+        <li><a href="#"><img src="Images/home-svgrepo-com.svg" alt="Home Icon"> Home</a></li>
+       <li><a href="#"><img src="Images/idea-svgrepo-com.svg" alt="Features Icon">Features</a></li>
+        <li><a href="#"><img src="Images/about-filled-svgrepo-com.svg" alt="About-Us Icon">About Us</a></li>
+        <li>
+            <a href="#" class="dropdown-toggle">Here</a>
+            <ul class="dropdown-menu">
+                <li><a href="#"><img src="Images/calendar-month-svgrepo-com.svg" alt="Calendar Icon"> Calendar</a></li>
+                <li><a href="#"><img src="Images/book-svgrepo-com.svg" alt="Modules Icon"> Modules</a></li>
+                <li><a href="#"><img src="Images/user-svgrepo-com.svg" alt="Tutors Icon"> Tutor</a></li>
+                <li><a href="#"><img src="Images/progress-svgrepo-com.svg" alt="Progress Icon">Progress</a></li>
+                <li><a href="#"><img src="Images/settings-2-svgrepo-com.svg" alt="Settings Icon"> Settings</a></li>
+            </ul>
+        <li>
+     </ul>
+  </div>
+    <div class="container">
+        <h1 class="text-center mb-4">Calendar</h1>
+        <div id="calendar"></div>
     </div>
 
-    <!--JAVASCRIPT-->
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('active');
+    }
+
+    document.addEventListener('click', function (event) {
+      const sidebar = document.getElementById('sidebar');
+      const burgerMenu = document.querySelector('.burger-menu');
+
+      // Close sidebar if clicked outside
+      if (!sidebar.contains(event.target) && !burgerMenu.contains(event.target)) {
+        sidebar.classList.remove('active');
+      }
+    });
+
+    document.querySelectorAll('.dropdown-toggle').forEach(item => {
+        item.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent the default anchor behavior
+            const dropdownMenu = this.nextElementSibling; // Get the dropdown menu
+            dropdownMenu.classList.toggle('active'); // Toggle the active class
+        });
+    });
+    // Close the dropdown if clicked outside
+    document.addEventListener('click', function(event) {
+        const dropdowns = document.querySelectorAll('.dropdown-menu');
+        dropdowns.forEach(dropdown => {
+            if (!dropdown.previousElementSibling.contains(event.target) && dropdown.classList.contains('active')) {
+                dropdown.classList.remove('active'); // Close the dropdown if clicked outside
+            }
+        });
+    });
+
+
+    document.addEventListener('DOMContentLoaded', function () {
         const calendarEl = document.getElementById('calendar');
   
         const calendar = new FullCalendar.Calendar(calendarEl, {
@@ -71,6 +102,6 @@ session_start();
   
         calendar.render();
       });
-    </script>
+  </script>
 </body>
 </html>

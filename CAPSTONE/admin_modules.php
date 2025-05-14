@@ -5,10 +5,10 @@ session_start();
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <link rel="stylesheet" href="calendar.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="admin.css">
 </head>
 <body>
   <!-- Navbar -->
@@ -30,23 +30,26 @@ session_start();
   <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
     <ul>
-        <li><a href="#">Home</a></li>
-       <li><a href="#">Features</a></li>
-        <li><a href="#">About Us</a></li>
-        <li>
-            <a href="#" class="dropdown-toggle">Here</a>
-            <ul class="dropdown-menu">
-                <li><a href="#"><img src="Images/calendar-month-svgrepo-com.svg" alt="Calendar Icon"> Calendar</a></li>
-                <li><a href="#"><img src="Images/book-svgrepo-com.svg" alt="Modules Icon"> Modules</a></li>
-                <li><a href="#"><img src="Images/user-svgrepo-com.svg" alt="Student Icon"> Student</a></li>
-                <li><a href="#"><img src="Images/settings-2-svgrepo-com.svg" alt="Settings Icon"> Settings</a></li>
-            </ul>
-        <li>
+        <li><a href="#"><img src="Images/dashboard-svgrepo-com.svg" alt="Home Icon">Dashboard</a></li>
+        <li><a href="#"><img src="Images/user-svgrepo-com.svg" alt="Features Icon">Users</a></li>
+        <li><a href="#"><img src="Images/book-svgrepo-com.svg" alt="About-Us Icon">Modules</a></li>
+        <li><a href="#"><img src="Images/users-svgrepo-com.svg" alt="About-Us Icon">Applicants</a></li>
      </ul>
   </div>
     <div class="container">
-        <h1 class="text-center mb-4">Calendar</h1>
-        <div id="calendar"></div>
+        <h1>Upload Learning Materials</h1>
+        <form action="upload_material.php" method="POST" enctype="multipart/form-data">
+            <label for="title">Title:</label>
+            <input type="text" name="title" id="title" required>
+            
+            <label for="description">Description:</label>
+            <textarea name="description" id="description" required></textarea>
+            
+            <label for="file">Upload File (PDF):</label>
+            <input type="file" name="file" id="file" accept=".pdf" required>
+            
+            <button type="submit">Upload</button>
+        </form>
     </div>
 
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
@@ -83,24 +86,6 @@ document.addEventListener('click', function(event) {
     });
 });
 
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const calendarEl = document.getElementById('calendar');
-  
-        const calendar = new FullCalendar.Calendar(calendarEl, {
-          initialView: 'dayGridMonth',
-          themeSystem: 'bootstrap5',
-          events: [
-            {
-              title: 'Sample Event',
-              start: new Date().toISOString().split('T')[0],
-              color: '#0d6efd'
-            }
-          ]
-        });
-  
-        calendar.render();
-      });
   </script>
 </body>
 </html>
