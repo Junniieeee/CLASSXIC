@@ -25,7 +25,7 @@ $file_url = urldecode($_GET['file_url']);
             <div></div>
         </div>
         <!-- Title -->
-        <div class="nav-center">Classix</div>
+        <div class="nav-center">ClassXic</div>
         <!-- User Info -->
         <div class="user-info">
             <img src="Images/user-svgrepo-com.svg" alt="User Icon">
@@ -58,6 +58,10 @@ $file_url = urldecode($_GET['file_url']);
         <input type="range" id="speedControl" min="0.5" max="2" step="0.1" value="1">
         <span id="speedValue">1x</span>
         <button id="highlightNarrateBtn" disabled>🎤 Narrate Highlighted</button>
+        <div style="margin-bottom:10px;">
+            <label for="voiceSelect">Voice:</label>
+            <select id="voiceSelect"></select>
+        </div>
         <div id="content" tabindex="0" aria-live="polite" aria-label="Converted PDF text will appear here"></div>
 
         <div id="popup" role="dialog" aria-modal="true" aria-live="assertive" aria-hidden="true">
@@ -85,46 +89,111 @@ $file_url = urldecode($_GET['file_url']);
             const popupPhonetic = document.getElementById('popup-phonetic');
             const popupMeaning = document.getElementById('popup-meaning');
             const playBtn = document.getElementById('playPronunciation');
+            const voiceSelect = document.getElementById('voiceSelect');
+            let voices = [];
 
             let pdfText = '';
             let currentWord = '';
             let utterance = null;
             let isPaused = false;
 
-            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.8.162/pdf.worker.min.js';
+            // Helper for TTS highlighting
+            function highlightWord(index) {
+                document.querySelectorAll('.word').forEach(span => {
+                    span.classList.remove('tts-highlight');
+                });
+                const span = document.querySelector(`.word[data-word-index="${index}"]`);
+                if (span) {
+                    span.classList.add('tts-highlight');
+                    span.scrollIntoView({ block: 'center', behavior: 'smooth' });
+                }
+            }
 
-            async function extractTextFromPdf(fileUrl) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.8.162/pdf.worker.min.js';
+            async function extractTextItemsFromPdf(fileUrl) {
                 const pdfDoc = await pdfjsLib.getDocument(fileUrl).promise;
-                let fullText = '';
+                let items = [];
                 for (let i = 1; i <= pdfDoc.numPages; i++) {
                     const page = await pdfDoc.getPage(i);
                     const textContent = await page.getTextContent();
-                    let pageText = '';
+                    let lastY = null;
+                    let lastX = null;
+                    let line = '';
+                    let lineFontSizes = [];
                     textContent.items.forEach(item => {
-                        pageText += item.str + ' ';
+                        const thisY = item.transform[5];
+                        const thisX = item.transform[4];
+
+                        // New line if Y changes significantly
+                        if (lastY !== null && Math.abs(thisY - lastY) > 5) { // Adjust threshold
+                            if (line.trim().length > 0) {
+                                items.push({
+                                    text: line.trim(),
+                                    fontSize: Math.round(Math.max(...lineFontSizes))
+                                });
+                            }
+                            line = '';
+                            lineFontSizes = [];
+                            lastX = null;
+                        }
+
+                        // Add space if X gap is big (e.g. > 2)
+                        if (lastX !== null && Math.abs(thisX - lastX) > 2) {
+                            line += ' ';
+                        }
+                        line += item.str;
+                        lineFontSizes.push(item.transform[0]);
+                        lastY = thisY;
+                        lastX = thisX + item.width; // move to end of current item
                     });
-                    fullText += pageText.trim() + '\n\n';
+
+                    // Push last line of the page
+                    if (line.trim().length > 0) {
+                        items.push({
+                            text: line.trim(),
+                            fontSize: Math.round(Math.max(...lineFontSizes))
+                        });
+                    }
+
+                    // Add a page break (optional)
+                    items.push({text: '', fontSize: 0});
                 }
-                return fullText.trim();
+                return items;
             }
 
-            function renderTextToSpans(text) {
-                const parts = text.split(/(\s+|[.,!?;:"'“”‘’\-\(\)\[\]{}])/g).filter(Boolean);
+            function renderTextItemsToHtml(items) {
                 const fragment = document.createDocumentFragment();
-                parts.forEach(part => {
-                    if (part.trim() === '') {
-                        fragment.appendChild(document.createTextNode(part));
-                        return;
-                    }
-                    if (/^\w+$/u.test(part.trim())) {
-                        const span = document.createElement('span');
-                        span.className = 'word';
-                        span.textContent = part;
-                        span.tabIndex = 0;
-                        fragment.appendChild(span);
+                let wordIndex = 0;
+                items.forEach(item => {
+                    if (!item.text.trim()) return;
+                    let className = '';
+                    if (item.fontSize >= 20) {
+                        className = 'pdf-title';
+                    } else if (item.fontSize >= 16) {
+                        className = 'pdf-subtitle';
                     } else {
-                        fragment.appendChild(document.createTextNode(part));
+                        className = 'pdf-paragraph';
                     }
+                    const div = document.createElement('div');
+                    div.className = className;
+                    // Word highlighting support
+                    item.text.split(/(\s+|[.,!?;:"'“”‘’\-\(\)\[\]{}])/g).forEach(part => {
+                        if (part.trim() === '') {
+                            div.appendChild(document.createTextNode(part));
+                            return;
+                        }
+                        if (/^\w+$/u.test(part.trim())) {
+                            const span = document.createElement('span');
+                            span.className = 'word';
+                            span.textContent = part;
+                            span.tabIndex = 0;
+                            span.setAttribute('data-word-index', wordIndex++);
+                            div.appendChild(span);
+                        } else {
+                            div.appendChild(document.createTextNode(part));
+                        }
+                    });
+                    fragment.appendChild(div);
                 });
                 return fragment;
             }
@@ -135,10 +204,10 @@ $file_url = urldecode($_GET['file_url']);
                 stopBtn.disabled = true;
                 highlightNarrateBtn.disabled = true;
                 try {
-                    const text = await extractTextFromPdf(fileUrl);
-                    pdfText = text;
+                    const items = await extractTextItemsFromPdf(fileUrl);
+                    pdfText = items.map(item => item.text).join('\n');
                     contentDiv.innerHTML = '';
-                    const fragment = renderTextToSpans(text);
+                    const fragment = renderTextItemsToHtml(items);
                     contentDiv.appendChild(fragment);
                     playPauseBtn.disabled = false;
                     stopBtn.disabled = false;
@@ -151,14 +220,40 @@ $file_url = urldecode($_GET['file_url']);
 
             loadPdf('<?php echo htmlspecialchars($file_url); ?>');
 
+            function populateVoices() {
+                voices = window.speechSynthesis.getVoices();
+                voiceSelect.innerHTML = '';
+                voices.forEach((voice, i) => {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = `${voice.name} (${voice.lang})${voice.default ? ' [default]' : ''}`;
+                    voiceSelect.appendChild(option);
+                });
+            }
+            // Some browsers load voices asynchronously
+            window.speechSynthesis.onvoiceschanged = populateVoices;
+            populateVoices();
+
             playPauseBtn.addEventListener('click', () => {
                 if (!utterance) {
+                    const wordSpans = Array.from(document.querySelectorAll('.word'));
+                    let wordIdx = 0;
                     utterance = new SpeechSynthesisUtterance(pdfText);
                     utterance.lang = 'en-US';
                     utterance.rate = parseFloat(speedControl.value);
+                    // Set selected voice
+                    const selectedVoice = voices[voiceSelect.value] || voices[0];
+                    utterance.voice = selectedVoice;
+
+                    utterance.onboundary = function(event) {
+                        if (event.name === 'word') {
+                            highlightWord(wordIdx++);
+                        }
+                    };
                     utterance.onend = () => {
                         playPauseBtn.textContent = '▶️ Play';
                         utterance = null;
+                        highlightWord(-1);
                     };
                     window.speechSynthesis.speak(utterance);
                     playPauseBtn.textContent = '⏸️ Pause';
@@ -178,13 +273,19 @@ $file_url = urldecode($_GET['file_url']);
                     window.speechSynthesis.cancel();
                     utterance = null;
                     playPauseBtn.textContent = '▶️ Play';
+                    highlightWord(-1); // Remove highlight
                 }
             });
 
             speedControl.addEventListener('input', () => {
                 speedValue.textContent = `${speedControl.value}x`;
                 if (utterance) {
-                    utterance.rate = parseFloat(speedControl.value);
+                    window.speechSynthesis.cancel();
+                    utterance = null;
+                    playPauseBtn.textContent = '▶️ Play';
+                    highlightWord(-1); // Remove highlight
+                    // Optionally, you can auto-restart narration here if you want
+                    // playPauseBtn.click();
                 }
             });
 
@@ -197,6 +298,8 @@ $file_url = urldecode($_GET['file_url']);
                     utterance = new SpeechSynthesisUtterance(selectedText);
                     utterance.lang = 'en-US';
                     utterance.rate = parseFloat(speedControl.value);
+                    const selectedVoice = voices[voiceSelect.value] || voices[0];
+                    utterance.voice = selectedVoice;
                     window.speechSynthesis.speak(utterance);
                 } else {
                     alert('Please highlight text to narrate.');
@@ -241,7 +344,20 @@ $file_url = urldecode($_GET['file_url']);
                 if (!currentWord) return;
                 const utterance = new SpeechSynthesisUtterance(currentWord);
                 utterance.lang = 'en-US';
+                const selectedVoice = voices[voiceSelect.value] || voices[0];
+                utterance.voice = selectedVoice;
                 window.speechSynthesis.speak(utterance);
+            });
+
+            voiceSelect.addEventListener('change', () => {
+                if (utterance) {
+                    window.speechSynthesis.cancel();
+                    utterance = null;
+                    playPauseBtn.textContent = '▶️ Play';
+                    highlightWord(-1); // Remove highlight
+                    // Optionally, auto-restart narration with new voice:
+                    // playPauseBtn.click();
+                }
             });
         })();
 

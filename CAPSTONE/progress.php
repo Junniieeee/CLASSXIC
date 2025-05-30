@@ -19,7 +19,7 @@ session_start();
             <div></div>
             </div>
         <!-- Title -->
-        <div class="nav-center">Classix</div>
+        <div class="nav-center">ClassXic</div>
         <!-- User Info -->
         <div class="user-info">
             <img src="Images/user-svgrepo-com.svg" alt="User Icon">

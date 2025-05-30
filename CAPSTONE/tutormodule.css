@@ -96,22 +96,7 @@ body {
     height: 30px;
     padding-right: 20px; /* Space between icon and text */
 }
-#calendar {
-    max-width: 1000px;
-    margin: 20px auto;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-#pdf-viewer-container h1 {
-    display: flex;               /* Use flexbox */
-    flex-direction: column;      /* Stack children vertically */
-    align-items: center;         /* Center items horizontally */
-    justify-content: center;     /* Center items vertically */
-    max-width: 100%;            /* Ensure it doesn't exceed the width */
-    margin-top: 50px;          /* Maintain the top margin */
-}
+
 .dropdown-menu {
     display: none; /* Hide the dropdown by default */
     list-style: none;
@@ -148,145 +133,177 @@ body {
     border-radius: 5px; /* Rounded corners */
     border-left: 2px solid #ffcc00; /* Left border for visual separation */
 }
-
-#popup {
-    position: absolute;
-    background: #fff;
-    border: 2px solid #3498db;
-    border-radius: 8px;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.3);
-    max-width: 300px;
-    padding: 10px 12px;
-    display: none;
-    z-index: 9999;
-    font-size: 0.9rem;
-    color: #222;
+h2{
+    text-align:center; 
+    margin-top: 90px; 
+    font-size: 2.2rem; 
+    font-family: 'OpenDyslexic', Arial, sans-serif;
 }
-#popup h3 {
-    margin: 0 0 8px 0;
-    color: #1a5276;
-    font-weight: 700;
-    font-size: 1.1rem;
-    word-break: break-word;
-}
-#popup p {
-    margin: 4px 0;
-    line-height: 1.3;
-}
-#popup button {
-    background-color: #3498db;
-    border: none;
+.upload-module-btn {
+    display: inline-block;
+    background-color: #00e200;
     color: #fff;
-    padding: 6px 10px;
-    border-radius: 5px;
-    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 10px 28px;
+    border: 1px solid #c8f1ce;
+    border-radius: 8px;
+    text-decoration: none;
+    margin-top: 8px;
+    transition: background 0.2s;
+}
+.upload-module-btn:hover {
+    background-color: #e28102;
+}
+/*modules*/
+.module-list {
+    background: #fffbe6;
+    border: 2px solid #222;
+    border-radius: 28px;
+    padding: 24px 18px;
+    max-width: 900px;
+    margin: 32px auto;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.module-item {
+    background: #fff;
+    border: 2px solid #222;
+    border-radius: 18px;
+    margin-bottom: 28px;
+    box-shadow: 2px 4px 8px rgba(0,0,0,0.07);
+    padding: 12px 18px 18px 18px;
+}
+.module-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+.module-user {
     display: flex;
     align-items: center;
-    font-weight: bold;
+    gap: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+.module-user-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+.module-verified-icon {
+    width: 22px;
+    height: 22px;
+}
+.module-date {
     font-size: 1rem;
-    user-select: none;
-    transition: background-color 0.3s ease;
+    font-weight: 600;
+    color: #444;
+    letter-spacing: 1px;
 }
-#popup button:hover {
-    background-color: #2980b9;
+.module-body {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: 8px;
 }
-#popup button svg {
-    width: 18px;
-    height: 18px;
-    fill: white;
-    margin-left: 6px;
-}
-/* PDF Viewer Container */
-#pdf-viewer-container {
-    margin: 100px auto 20px;
-    max-width: 950px;
-    background: #ffffff; /* White background for readability */
-    padding: 20px;
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-    font-size: 18px; /* Larger font size for readability */
-    line-height: 1.8; /* Increased line spacing */
-    font-family: 'OpenDyslexic', sans-serif; /* Dyslexic-friendly font */
-    color: #333; /* Dark gray text for high contrast */
-}
-
-/* Buttons Styling */
-#pdf-viewer-container button {
-    font-family: 'OpenDyslexic', sans-serif;
-    font-size: 16px;
-    padding: 10px 15px;
-    margin: 10px 0px 10px 50px;
-    border: none;
-    border-radius: 5px;
-    background-color: #2ee637; /* Blue background for buttons */
-    color: #fff; /* White text for contrast */
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#pdf-viewer-container button:hover {
-    background-color: #07c510; /* Darker blue on hover */
-}
-
-/* Input Range Styling */
-#pdf-viewer-container input[type="range"] {
-    width: 100px;
-    margin: 0 10px;
-}
-
-/* Highlighted Text Styling */
-#pdf-viewer-container .highlight {
-    background-color: #ffcc00; /* Yellow highlight for selected text */
-    color: #000;
-    padding: 2px 4px;
-    border-radius: 3px;
-}
-
-.pdf-title {
-  text-align: center;
-  font-size: 2em;
-  font-weight: bold;
-  margin: 18px 0 10px 0;
-}
-.pdf-subtitle {
-  text-align: left;
-  font-size: 1.3em;
-  font-weight: 500;
-  margin: 30px 0 15px 5px;
-}
-.pdf-paragraph {
-  text-align: justify;
-  font-size: 1em;
-  margin: 8px 0px 0px 0px;
-}   
-.tts-highlight {
-    background: #ffcc00;
-    color: #000;
-    border-radius: 3px;
-}
-
-#voiceSelect {
+.module-title {
+    flex: 1;
+    background: #fff;
+    border: 2px solid #bbb;
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-size: 1.08rem;
     font-family: 'OpenDyslexic', Arial, sans-serif;
-    font-size: 16px;
-    padding: 8px 12px;
-    border: 2px solid #3498db;
-    border-radius: 5px;
-    background-color: #fcfbd7;
-    color: #333;
-    margin-left: 8px;
-    margin-right: 8px;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.06);
+}
+.module-actions {
+    display: flex;
+    gap: 18px;
+    margin-left: 12px;
+}
+.module-edit, .module-delete {
+    color: #222;
+    font-weight: 500;
+    text-decoration: none;
+    font-size: 1.05rem;
+    transition: color 0.2s;
+}
+.module-edit:hover { color: #1e90ff; }
+.module-delete:hover { color: #e74c3c; }
+/* Modal overlay */
+.upload-box-modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0; top: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.18);
+    justify-content: center;
+    align-items: center;
+}
+
+/* Modal content box */
+.upload-box-content {
+    background: #fffbe6;
+    border: 2px solid #222;
+    border-radius: 28px;
+    max-width: 850px;
+    width: 95%;
+    margin: auto;
+    padding: 28px 32px 32px 32px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.13);
+    font-family: 'OpenDyslexic', Arial, sans-serif;
+}
+
+.upload-form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 18px;
+    gap: 18px;
+}
+.upload-form-row label {
+    min-width: 90px;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+.upload-form-row input[type="text"] {
+    flex: 1;
+    font-size: 1.2rem;
+    padding: 8px 16px;
+    border-radius: 12px;
+    border: 2px solid #bbb;
+    font-family: 'OpenDyslexic', Arial, sans-serif;
     outline: none;
-    transition: border-color 0.3s;
+    margin-left: 8px;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.06);
 }
-
-#voiceSelect:focus {
-    border-color: #2980b9;
-    background-color: #fff;
+.custom-file-upload {
+    border: 2px solid #bbb;
+    border-radius: 12px;
+    padding: 18px 24px;
+    cursor: pointer;
+    background: #fff;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.06);
+    display: inline-block;
+    text-align: center;
 }
-
-#pdf-viewer-container label[for="voiceSelect"] {
-    font-weight: bold;
-    margin-right: 4px;
+.upload-submit-btn {
+    background: #ffb300;
+    color: #222;
+    font-size: 1.15rem;
+    font-family: 'OpenDyslexic', Arial, sans-serif;
+    font-weight: 600;
+    border: none;
+    border-radius: 18px;
+    padding: 10px 38px;
+    margin-top: 18px;
+    box-shadow: 2px 4px 8px rgba(0,0,0,0.13);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.upload-submit-btn:hover {
+    background: #ff9800;
 }
 
 @media  (max-width: 768px) {
