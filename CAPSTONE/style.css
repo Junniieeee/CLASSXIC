@@ -60,7 +60,6 @@ body {
   border-radius: 20px;
   border: 1px solid black;
   margin-left: -50px;
-  font-family: 'OpenDyslexic', sans-serif;
   text-align: center;
   background-color: rgb(250, 164, 4);
 }
@@ -72,7 +71,8 @@ body {
   cursor: pointer;
   margin-left: 0px;
   position: relative;
-  font-family: 'OpenDyslexic', sans-serif;
+  font-family: inherit !important;
+
 }
 .main {
   display: flex;

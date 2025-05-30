@@ -5,7 +5,7 @@ session_start();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = $_POST['title'];
     $description = $_POST['description'];
-    $uploaded_by = 'admin'; // Default for now
+    $uploaded_by = 'tutor'; // Default for now
     $upload_date = date('Y-m-d H:i:s');
     $is_approved = 1; // Default to approved
     $approved_by = 'admin'; // Default for now
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       VALUES ('$title', '$description', '$file_url', '$uploaded_by', '$upload_date', '$is_approved', '$approved_by', '$approved_at')";
             if (mysqli_query($conn, $query)) {
                 echo "Material uploaded successfully!";
-                header("Location: admin_modules.php");
+                header("Location: tutormodule.php");
                 exit();
             } else {
                 echo "Error: " . mysqli_error($conn);
