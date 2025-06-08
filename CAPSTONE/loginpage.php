@@ -298,7 +298,7 @@ if (isset($_POST['login'])) {
                 </div>
                 <div class="">
                     <p class="text-center mb-4">
-                        If you don't have an account <a href="" data-bs-toggle="modal" data-bs-target="#signupModal">sign up here.</a>
+                        If you don't have an account <a href="" data-bs-toggle="modal" data-bs-target="#roleModal">sign up here.</a>
                     </p>
                 </div>
             </div>
