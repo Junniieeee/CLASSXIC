@@ -23,7 +23,8 @@ session_start();
         <div class="nav-center">ClassXic</div>
         <!-- User Info -->
         <div class="user-info">
-        <img src="Images/user-svgrepo-com.svg" alt="User Icon">
+            <span><?php echo htmlspecialchars($_SESSION['first_name']); ?></span>
+            <img src="Images/user-svgrepo-com.svg" alt="User Icon">
         </div>
     </nav>
 
@@ -45,7 +46,7 @@ session_start();
         </div>
     </main>
     <!-- Classix's Features -->
-    <div class="features-section">
+    <div class="features-section" id="features-section">
         <h1>ClassXic's Features</h1>
        <div class="features-container">
             <div class="feature-box"
@@ -88,7 +89,7 @@ session_start();
             </div>
         </div>
     </div>
-    <div class="about-section">
+    <div class="about-section" id="about-us">
         <div class="about-text">
             <h1>About Us.</h1>
             <p>
@@ -104,17 +105,18 @@ session_start();
   <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <ul>
-            <li><a href="#"><img src="Images/home-svgrepo-com.svg" alt="Home Icon"> Home</a></li>
-            <li><a href="#"><img src="Images/idea-svgrepo-com.svg" alt="Features Icon">Features</a></li>
-            <li><a href="#"><img src="Images/about-filled-svgrepo-com.svg" alt="About-Us Icon">About Us</a></li>
+            <li><a href="landingpage.php"><img src="Images/home-svgrepo-com.svg" alt="Home Icon"> Home</a></li>
+            <li><a href="calendar.php"><img src="Images/calendar-month-svgrepo-com.svg" alt="Calendar Icon"> Calendar</a></li>
+            <li><a href="studentmodule.php"><img src="Images/book-svgrepo-com.svg" alt="Modules Icon"> Modules</a></li>
+            <li><a href="tutorlist.php"><img src="Images/user-svgrepo-com.svg" alt="Tutors Icon"> Tutor</a></li>
+            <li><a href="progress.php"><img src="Images/progress-svgrepo-com.svg" alt="Progress Icon">Progress</a></li>
             <li>
-                <a href="#" class="dropdown-toggle">Here</a>
+                <a href="#" class="dropdown-toggle">-Option-</a>
                 <ul class="dropdown-menu">
-                    <li><a href="#"><img src="Images/calendar-month-svgrepo-com.svg" alt="Calendar Icon"> Calendar</a></li>
-                    <li><a href="#"><img src="Images/book-svgrepo-com.svg" alt="Modules Icon"> Modules</a></li>
-                    <li><a href="#"><img src="Images/user-svgrepo-com.svg" alt="Tutors Icon"> Tutor</a></li>
-                    <li><a href="#"><img src="Images/progress-svgrepo-com.svg" alt="Progress Icon">Progress</a></li>
-                    <li><a href="#"><img src="Images/settings-2-svgrepo-com.svg" alt="Settings Icon"> Settings</a></li>
+                    <li><a href="#features-section"><img src="Images/idea-svgrepo-com.svg" alt="Features Icon">Features</a></li>
+                    <li><a href="#about-us"><img src="Images/about-filled-svgrepo-com.svg" alt="About-Us Icon">About Us</a></li>
+                    <li><a href="#settings"><img src="Images/settings-2-svgrepo-com.svg" alt="Settings Icon"> Settings</a></li>
+                    <li><a href="logout.php"><img src="Images/logout-svgrepo-com.svg" alt="Logout Icon">Log out</a></li>
                 </ul>
             <li>
         </ul>
