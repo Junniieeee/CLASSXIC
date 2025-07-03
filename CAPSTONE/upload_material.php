@@ -26,11 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $query = "INSERT INTO learning_materials (title, description, file_url, uploaded_by, upload_date, is_approved, approved_by, approved_at)
                       VALUES ('$title', '$description', '$file_url', '$uploaded_by', '$upload_date', '$is_approved', '$approved_by', '$approved_at')";
             if (mysqli_query($conn, $query)) {
-                echo "Material uploaded successfully!";
-                header("Location: tutormodule.php");
+                header("Location: tutormodule.php?upload=success");
                 exit();
             } else {
-                echo "Error: " . mysqli_error($conn);
+                header("Location: tutormodule.php?upload=fail");
+                exit();
             }
         } else {
             echo "Only PDF files are allowed.";

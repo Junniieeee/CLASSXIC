@@ -123,12 +123,12 @@ if (isset($_POST['login'])) {
                 <h2>
                     Lets <span class="green">Grow</span> Together and <br /> Learn From Each Other.
                 </h2>
-                <p>
+                <p> 
                     Our learning space helps students share ideas,
                     build skills, and grow side by side —
                     because learning is better when we work as a team.
                 </p>
-                <button class="hire-button">Hire Us!</button>
+                <button class="hire-button">Join Us!</button>
             </div>
             <div class="right-section">
                 <img src="Images/main.png" alt="Students learning together" class="students-image" />

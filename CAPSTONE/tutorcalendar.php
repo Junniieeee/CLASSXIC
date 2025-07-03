@@ -22,9 +22,10 @@ session_start();
     <!-- Title -->
     <div class="nav-center">ClassXic</div>
     <!-- User Info -->
-    <div class="user-info">
-      <img src="Images/user-svgrepo-com.svg" alt="User Icon">
-    </div>
+        <div class="user-info">
+            <span><?php echo htmlspecialchars($_SESSION['first_name']); ?></span>
+            <img src="Images/user-svgrepo-com.svg" alt="User Icon">
+        </div>
   </nav>
 
   <!-- Sidebar -->

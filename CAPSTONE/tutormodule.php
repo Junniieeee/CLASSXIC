@@ -22,9 +22,10 @@ session_start();
     <!-- Title -->
     <div class="nav-center">ClassXic</div>
     <!-- User Info -->
-    <div class="user-info">
-      <img src="Images/user-svgrepo-com.svg" alt="User Icon">
-    </div>
+        <div class="user-info">
+            <span><?php echo htmlspecialchars($_SESSION['first_name']); ?></span>
+            <img src="Images/user-svgrepo-com.svg" alt="User Icon">
+        </div>
   </nav>
 
   <!-- Sidebar -->
@@ -82,11 +83,28 @@ session_start();
       </div>
     </div>
 
+    <!-- Upload Result Modal -->
+    <div id="uploadResultModal" class="modal" style="display:none;">
+      <div class="modal-content upload-result-modal-content">
+        <span id="close-upload-result-modal" class="close-upload-result-modal">&times;</span>
+        <div class="upload-checkmark">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="54" fill="none" stroke="#2ecc40" stroke-width="4"/>
+            <polyline points="40,65 55,80 80,45" fill="none" stroke="#2ecc40" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h2 id="uploadResultTitle" class="upload-result-title"></h2>
+        <p id="uploadResultMsg" class="upload-result-message"></p>
+      </div>
+    </div>
+
     <!-- Module List Container -->
     <?php
-    $query = "SELECT material_id, title, uploaded_by, approved_at, file_url FROM learning_materials WHERE is_approved = 1 ORDER BY approved_at DESC";
-
-    $result = mysqli_query($conn, $query);
+    $query = "SELECT material_id, title, description, uploaded_by, approved_at, file_url FROM learning_materials WHERE is_approved = 1 AND uploaded_by = ? ORDER BY approved_at DESC";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $_SESSION['first_name']);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
     if (mysqli_num_rows($result) > 0) {
         echo '<div class="module-list">';
@@ -106,7 +124,10 @@ session_start();
             
             // Module Body
             echo '<div class="module-body">';
-            echo '  <div class="module-title">' . htmlspecialchars($row['title']) . '</div>';
+            echo '  <div class="module-title-desc">';
+            echo      '<span class="module-title">' . htmlspecialchars($row['title']) . '</span>';
+            echo      '<span class="module-desc"> - ' . htmlspecialchars($row['description']) . '</span>';
+            echo '  </div>';
             echo '  <div class="module-actions">';
             echo '      <a href="modules.php?file_url=' . urlencode($row['file_url']) . '" class="module-edit">View</a>';
             echo '      <a href="delete_module.php?id=' . $row['material_id'] . '" class="module-delete" onclick="return confirm(\'Are you sure you want to delete this?\');">Delete</a>';
@@ -167,6 +188,41 @@ session_start();
       if (event.target == modal) {
         modal.style.display = 'none';
       }
+    });
+
+    // Show upload result modal
+    function showUploadResultModal(success, message) {
+        const modal = document.getElementById('uploadResultModal');
+        const title = document.getElementById('uploadResultTitle');
+        const msg = document.getElementById('uploadResultMsg');
+        title.textContent = success ? "Upload Successful" : "Upload Failed";
+        msg.textContent = message;
+        modal.style.display = 'flex';
+    }
+
+    // Close modal on X click
+    document.getElementById('close-upload-result-modal').onclick = function() {
+        document.getElementById('uploadResultModal').style.display = 'none';
+    };
+    // Close modal when clicking outside
+    window.addEventListener('click', function(e) {
+        const modal = document.getElementById('uploadResultModal');
+        if (e.target === modal) modal.style.display = 'none';
+    });
+
+    // Check URL for upload result
+    window.addEventListener('DOMContentLoaded', function() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('upload') === 'success') {
+            showUploadResultModal(true, "Document uploaded successfully!");
+        } else if (params.get('upload') === 'fail') {
+            showUploadResultModal(false, "There was an error uploading your file.");
+        } else if (params.get('upload') === 'deleted') {
+            showUploadResultModal(true, "Document deleted successfully!");
+            document.getElementById('uploadResultTitle').textContent = "Delete Successful";
+            document.querySelector('.upload-checkmark svg circle').setAttribute('stroke', '#ff5252'); // red
+            document.querySelector('.upload-checkmark svg polyline').setAttribute('stroke', '#ff5252');
+        }
     });
   </script>
 </body>

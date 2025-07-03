@@ -94,8 +94,12 @@ $file_url = urldecode($_GET['file_url']);
 
             let pdfText = '';
             let currentWord = '';
+            let wordBoundaries = [];
+            let wordSpans = [];
             let utterance = null;
             let isPaused = false;
+            let currentWordIdx = 0;
+            let startWordIdx = 0; // Add this at the top with your other let variables
 
             // Helper for TTS highlighting
             function highlightWord(index) {
@@ -105,8 +109,21 @@ $file_url = urldecode($_GET['file_url']);
                 const span = document.querySelector(`.word[data-word-index="${index}"]`);
                 if (span) {
                     span.classList.add('tts-highlight');
-                    span.scrollIntoView({ block: 'center', behavior: 'smooth' });
                 }
+            }
+
+            // After rendering the text, collect word spans and their positions
+            function collectWordSpans() {
+                wordSpans = Array.from(document.querySelectorAll('.word'));
+                wordBoundaries = [];
+                let charCount = 0;
+                wordSpans.forEach(span => {
+                    wordBoundaries.push({
+                        start: charCount,
+                        end: charCount + span.textContent.length
+                    });
+                    charCount += span.textContent.length + 1; // +1 for space or separator
+                });
             }
 
             pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.8.162/pdf.worker.min.js';
@@ -209,6 +226,7 @@ $file_url = urldecode($_GET['file_url']);
                     contentDiv.innerHTML = '';
                     const fragment = renderTextItemsToHtml(items);
                     contentDiv.appendChild(fragment);
+                    collectWordSpans(); // <-- Add this after rendering
                     playPauseBtn.disabled = false;
                     stopBtn.disabled = false;
                     highlightNarrateBtn.disabled = false;
@@ -236,12 +254,13 @@ $file_url = urldecode($_GET['file_url']);
 
             playPauseBtn.addEventListener('click', () => {
                 if (!utterance) {
-                    const wordSpans = Array.from(document.querySelectorAll('.word'));
-                    let wordIdx = 0;
-                    utterance = new SpeechSynthesisUtterance(pdfText);
+                    wordSpans = Array.from(document.querySelectorAll('.word'));
+                    let wordIdx = startWordIdx; // Start from selected word or 0
+                    // Build text from startWordIdx
+                    let speakText = wordSpans.slice(startWordIdx).map(span => span.textContent).join(' ');
+                    utterance = new SpeechSynthesisUtterance(speakText);
                     utterance.lang = 'en-US';
                     utterance.rate = parseFloat(speedControl.value);
-                    // Set selected voice
                     const selectedVoice = voices[voiceSelect.value] || voices[0];
                     utterance.voice = selectedVoice;
 
@@ -254,6 +273,7 @@ $file_url = urldecode($_GET['file_url']);
                         playPauseBtn.textContent = '▶️ Play';
                         utterance = null;
                         highlightWord(-1);
+                        startWordIdx = 0; // Reset to beginning after finish
                     };
                     window.speechSynthesis.speak(utterance);
                     playPauseBtn.textContent = '⏸️ Pause';
@@ -268,44 +288,18 @@ $file_url = urldecode($_GET['file_url']);
                 }
             });
 
+            // When stop is clicked, reset to beginning
             stopBtn.addEventListener('click', () => {
                 if (utterance) {
                     window.speechSynthesis.cancel();
                     utterance = null;
                     playPauseBtn.textContent = '▶️ Play';
                     highlightWord(-1); // Remove highlight
+                    startWordIdx = 0; // Reset to beginning
                 }
             });
 
-            speedControl.addEventListener('input', () => {
-                speedValue.textContent = `${speedControl.value}x`;
-                if (utterance) {
-                    window.speechSynthesis.cancel();
-                    utterance = null;
-                    playPauseBtn.textContent = '▶️ Play';
-                    highlightWord(-1); // Remove highlight
-                    // Optionally, you can auto-restart narration here if you want
-                    // playPauseBtn.click();
-                }
-            });
-
-            highlightNarrateBtn.addEventListener('click', () => {
-                const selectedText = window.getSelection().toString().trim();
-                if (selectedText) {
-                    if (utterance) {
-                        window.speechSynthesis.cancel();
-                    }
-                    utterance = new SpeechSynthesisUtterance(selectedText);
-                    utterance.lang = 'en-US';
-                    utterance.rate = parseFloat(speedControl.value);
-                    const selectedVoice = voices[voiceSelect.value] || voices[0];
-                    utterance.voice = selectedVoice;
-                    window.speechSynthesis.speak(utterance);
-                } else {
-                    alert('Please highlight text to narrate.');
-                }
-            });
-            
+            // When a word is clicked, start reading from that word
             contentDiv.addEventListener('click', async (event) => {
                 const target = event.target;
                 if (!target.classList.contains('word')) return;
@@ -320,7 +314,7 @@ $file_url = urldecode($_GET['file_url']);
                 const rect = target.getBoundingClientRect();
                 popup.style.top = `${rect.bottom + window.scrollY + 5}px`;
                 popup.style.left = `${rect.left + window.scrollX}px`;
-
+                // API call
                 try {
                     const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(currentWord.toLowerCase())}`);
                     if (!response.ok) throw new Error('No data found');
@@ -332,6 +326,15 @@ $file_url = urldecode($_GET['file_url']);
                     popupPhonetic.textContent = '-';
                     popupMeaning.textContent = 'No information found.';
                 }
+
+                // Start reading from clicked word
+                if (utterance) {
+                    window.speechSynthesis.cancel();
+                    utterance = null;
+                }
+                startWordIdx = parseInt(target.getAttribute('data-word-index'));
+                playPauseBtn.textContent = '⏸️ Pause';
+                playPauseBtn.click(); // Start reading from this word
             });
 
             document.addEventListener('click', (e) => {
@@ -358,6 +361,10 @@ $file_url = urldecode($_GET['file_url']);
                     // Optionally, auto-restart narration with new voice:
                     // playPauseBtn.click();
                 }
+            });
+
+            speedControl.addEventListener('input', () => {
+                speedValue.textContent = speedControl.value + 'x';
             });
         })();
 
