@@ -154,9 +154,14 @@ body {
   padding: 30px;
   border-radius: 20px;
   max-width: 600px;
-  height: 450px;
+  min-width: 0;
+  height: auto;
   margin-top: 50px;
-  align-self: flex-start; /* Aligns only this section to the top */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; /* Ensures children take full width */
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .left-section h2 {
@@ -176,13 +181,14 @@ body {
 .hire-button {
   background-color: #55e055;
   border: none;
-  padding: 20px 150px;
+  padding: 20px ;
   border-radius: 30px;
   font-size: 25px;
   font-weight: bold;
   cursor: pointer;
-  margin-left: 7rem;
-  margin-top: px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: auto; /* Pushes the button to the bottom if space allows */
 }
 .hire-button:hover {
   background-color: #007400;
@@ -401,7 +407,53 @@ body {
 }
 
 /* Responsive for mobile */
-@media (max-width: 900px) {
+
+@media (max-width: 1200px) {
+  .main {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 20px;
+    margin-top: 50px;
+  }
+  .right-section {
+    max-width: 100%;
+    width: 100%;
+    margin: 0 auto 20px auto;
+    height: auto;
+    }
+    .left-section{
+    max-width: 100%;
+    width: 50%;
+    margin: 0 auto 20px auto;
+    height: auto;
+}
+.left-section h2 {
+  font-size: 23px;
+  margin-top: 3px;
+}
+.left-section p {
+  font-size: 18px;
+  margin-top: 3px;
+}
+.students-image {
+  width: 100%;
+    max-width: 350px;
+    margin-top: 30px;
+  }
+  .curve-text {
+    font-size: 25px;
+    margin-top: 0;
+  }
+  .hire-button {
+    width: 100%;
+    margin-left: 0;
+    padding: 15px 0;
+    font-size: 20px;
+  }
+  .features-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
   .about-section {
     flex-direction: column;
     align-items: stretch;
@@ -415,6 +467,37 @@ body {
     max-width: 100%;
     margin: 0 auto;
   }
+  .about-text h1 {
+    font-size: 23px;
+}
+
+.about-text p {
+  margin: 0;
+  text-align: justify;
+  line-height: 1.7;
+  letter-spacing:0;
+  font-size: 17px;
+  width: 110%;
+}
+.site-footer {
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 8px;
+  font-size: 0.95rem;
+}
+.footer-right {
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.footer-directory {
+  margin-left: 0;
+  margin-top: 6px;
+  display: block;
+}
+.footer-left {
+  margin-left: 0;
+}
 }
 @media  (max-width: 768px) {
     .sidebar{
@@ -436,95 +519,10 @@ body {
         padding: 28px 0;
         min-height: 80px;
     }
-}
-@media (max-width: 900px) {
-  .main {
-    flex-direction: column;
-    align-items: stretch;
-    padding: 20px;
-    margin-top: 50px;
-    }
-.right-section {
+    .left-section{
     max-width: 100%;
     width: 100%;
     margin: 0 auto 20px auto;
     height: auto;
-    }
-.left-section{
-    max-width: 100%;
-    width: 320px;
-    margin: 0 0px 20px -17px;
-    height: auto;
-}
-.left-section h2 {
-  font-size: 23px;
-  margin-top: 3px;
-    }
-.left-section p {
-    font-size: 18px;
-    margin-top: 3px;
-    }
-.students-image {
-    width: 100%;
-    max-width: 350px;
-    margin-top: 30px;
-    }
-.curve-text {
-    font-size: 25px;
-    margin-top: 0;
-    }
-.hire-button {
-    width: 100%;
-    margin-left: 0;
-    padding: 15px 0;
-    font-size: 20px;
-    }
-.features-container {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
-  }
-.about-section {
-    flex-direction: column;
-    align-items: stretch;
-    padding: 18px;
-    gap: 18px;
-  }
-.about-image {
-    justify-content: flex-start;
-  }
-.about-image img {
-    max-width: 100%;
-    margin: 0 auto;
-  }
-.about-text h1 {
-  font-size: 23px;
-}
-
-.about-text p {
-  margin: 0;
-  text-align: justify;
-  line-height: 1.7;
-  letter-spacing:0;
-  font-size: 17px;
-  width: 110%;
-}
-  .site-footer {
-    flex-direction: column;
-    gap: 10px;
-    padding: 16px 8px;
-    font-size: 0.95rem;
-  }
-  .footer-right {
-    gap: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .footer-directory {
-    margin-left: 0;
-    margin-top: 6px;
-    display: block;
-  }
-  .footer-left {
-    margin-left: 0;
-  }
+   }
 }

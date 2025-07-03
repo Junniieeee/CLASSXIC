@@ -216,6 +216,18 @@ h2{
     font-size: 1.08rem;
     font-family: 'OpenDyslexic', Arial, sans-serif;
     box-shadow: 2px 2px 4px rgba(0,0,0,0.06);
+    font-weight: bold;
+}
+.module-title-desc {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.1rem;
+}
+.module-desc {
+  color: #555;
+  font-style: italic;
+  font-weight: normal;
 }
 .module-actions {
     display: flex;
@@ -223,7 +235,7 @@ h2{
     margin-left: 12px;
 }
 .module-edit, .module-delete {
-    color: #222;
+    color: #17ce27;
     font-weight: 500;
     text-decoration: none;
     font-size: 1.05rem;
@@ -304,6 +316,73 @@ h2{
 }
 .upload-submit-btn:hover {
     background: #ff9800;
+}
+
+/* Modal styles  */
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+}
+.modal-content {
+  background: #fff;
+  border-radius: 10px;
+  padding: 30px 20px;
+  box-shadow: 0 2px 8px #0002;
+  position: relative;
+}
+
+.upload-result-modal-content {
+  max-width: 400px;
+  margin: auto;
+  text-align: center;
+  padding: 40px 20px 30px 20px;
+  border-radius: 12px;
+  position: relative;
+}
+
+.upload-checkmark {
+  margin: 0 auto 10px auto; /* Reduce bottom margin from 20px to 10px */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.upload-result-title {
+  margin-top: 10px;    /* Reduce space above the title */
+  margin-bottom: 6px;  /* Reduce space below the title */
+  font-size: 2rem;
+  font-family: 'OpenDyslexic', Arial, sans-serif;
+  font-weight: bold;
+  text-align: center;
+}
+
+.upload-result-message {
+  font-size: 1.15rem;
+  font-family: 'OpenDyslexic', Arial, sans-serif;
+  font-weight: 600;
+  color: #222;
+  margin-top: 6px;    /* Reduce space above the message */
+}
+
+.close-upload-result-modal {
+  position: absolute;
+  top: 16px;
+  right: 22px;
+  font-size: 28px;
+  color: #888;
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.2s;
+}
+.close-upload-result-modal:hover {
+  color: #222;
 }
 
 @media  (max-width: 768px) {

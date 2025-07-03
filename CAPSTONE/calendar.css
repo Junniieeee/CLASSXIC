@@ -148,6 +148,135 @@ body {
     border-radius: 5px; /* Rounded corners */
     border-left: 2px solid #ffcc00; /* Left border for visual separation */
 }
+.calendar-create-modal {
+  background: #fff;
+  padding: 24px 18px 18px 18px;
+  border-radius: 22px;
+  box-shadow: 0 2px 8px #0003;
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  min-width: 320px;
+  border: 2px solid #222;
+  font-family: 'OpenDyslexic', Arial, sans-serif;
+}
+
+.calendar-create-title {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.calendar-create-label {
+  display: block;
+  margin: 10px 0 2px 2px;
+  font-size: 1rem;
+}
+
+.calendar-create-input,
+#userSelect {
+  width: 100%;
+  padding: 8px 16px;
+  border-radius: 22px;
+  border: 2px solid #888;
+  margin-bottom: 8px;
+  font-size: 1rem;
+  outline: none;
+  box-sizing: border-box;
+  font-family: inherit;
+  transition: border 0.2s;
+}
+
+.calendar-create-input:focus,
+#userSelect:focus {
+  border: 2px solid #7c3aed;
+}
+
+#userSelect {
+  margin-bottom: 10px;
+  margin-top: 2px;
+  appearance: none;
+  background: #fff url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' stroke='%23222' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 8 10 12 14 8'/%3E%3C/svg%3E") no-repeat right 12px center/20px 20px;
+}
+
+.calendar-create-btn-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+.calendar-create-btn {
+  flex: 1 1 0;
+  padding: 8px 0;
+  border-radius: 18px;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 0;
+  transition: background 0.2s;
+  font-family: inherit;
+}
+
+.calendar-create-btn-green {
+  background: #19d219;
+  color: #fff;
+}
+
+.calendar-create-btn-green:hover {
+  background: #0e9c0e;
+}
+
+.calendar-create-btn-red {
+  background: #f44336;
+  color: #fff;
+}
+
+.calendar-create-btn-red:hover {
+  background: #b71c1c;
+}
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0; top: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.05);
+  justify-content: center;
+  align-items: center;
+}
+.calendar-notify-modal-content {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px 28px 24px 28px;
+  box-shadow: 0 2px 12px #0002;
+  text-align: center;
+  min-width: 260px;
+  position: relative;
+}
+.calendar-notify-checkmark {
+  margin: 0 auto 10px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.calendar-notify-title {
+  margin: 10px 0 6px 0;
+  font-size: 1.5rem;
+  font-family: 'OpenDyslexic', Arial, sans-serif;
+  font-weight: bold;
+}
+.calendar-notify-message {
+  font-size: 1.1rem;
+  font-family: 'OpenDyslexic', Arial, sans-serif;
+  font-weight: 600;
+  color: #222;
+  margin-top: 6px;
+}
 @media  (max-width: 768px) {
     .sidebar{
     width: 250px;
