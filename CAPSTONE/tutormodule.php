@@ -34,14 +34,15 @@ session_start();
             <li><a href="tutorlanding.php"><img src="Images/home-svgrepo-com.svg" alt="Home Icon"> Home</a></li>
             <li><a href="tutorcalendar.php"><img src="Images/calendar-month-svgrepo-com.svg" alt="Calendar Icon"> Calendar</a></li>
             <li><a href="tutormodule.php"><img src="Images/book-svgrepo-com.svg" alt="Modules Icon"> Modules</a></li>
-            <li><a href="studentlist.php"><img src="Images/user-svgrepo-com.svg" alt="Tutors Icon"> Students</a></li>
-
+            <li><a href="studentlist.php"><img src="Images/user-svgrepo-com.svg" alt="Students Icon"> Students</a></li>
+           <!-- <li><a href="progress.php"><img src="Images/progress-svgrepo-com.svg" alt="Progress Icon">Progress</a></li>-->
             <li>
-                <a href="#" class="dropdown-toggle">Here</a>
+                <a href="#" class="dropdown-toggle">-Option-</a>
                 <ul class="dropdown-menu">
-                    <li><a href="#"><img src="Images/idea-svgrepo-com.svg" alt="Features Icon">Features</a></li>
-                    <li><a href="#"><img src="Images/about-filled-svgrepo-com.svg" alt="About-Us Icon">About Us</a></li>
-                    <li><a href="#"><img src="Images/settings-2-svgrepo-com.svg" alt="Settings Icon"> Settings</a></li>
+                    <li><a href="#features-section"><img src="Images/idea-svgrepo-com.svg" alt="Features Icon">Features</a></li>
+                    <li><a href="#about-us"><img src="Images/about-filled-svgrepo-com.svg" alt="About-Us Icon">About Us</a></li>
+                    <li><a href="#settings"><img src="Images/settings-2-svgrepo-com.svg" alt="Settings Icon"> Settings</a></li>
+                    <li><a href="logout.php"><img src="Images/logout-svgrepo-com.svg" alt="Logout Icon">Log out</a></li>
                 </ul>
             <li>
         </ul>
@@ -100,9 +101,9 @@ session_start();
 
     <!-- Module List Container -->
     <?php
-    $query = "SELECT material_id, title, description, uploaded_by, approved_at, file_url FROM learning_materials WHERE is_approved = 1 AND uploaded_by = ? ORDER BY approved_at DESC";
+    $query = "SELECT material_id, title, description, uploaded_by, approved_at, file_url FROM learning_materials WHERE is_approved = 1 AND uploaded_by_id = ? ORDER BY approved_at DESC";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $_SESSION['first_name']);
+    $stmt->bind_param("i", $_SESSION['user_id']);
     $stmt->execute();
     $result = $stmt->get_result();
 

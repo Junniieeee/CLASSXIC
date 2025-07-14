@@ -1,6 +1,68 @@
 <?php
 include "myconnector.php";
 session_start();
+
+// 1. Get the student's approved tutor(s)
+$student_id = $_SESSION['user_id'];
+$tutor_ids = [];
+$tutor_query = "SELECT tutor_id FROM tutor_applications WHERE student_id=? AND status='approved'";
+$stmt = $conn->prepare($tutor_query);
+$stmt->bind_param("i", $student_id);
+$stmt->execute();
+$tutor_result = $stmt->get_result();
+while ($row = $tutor_result->fetch_assoc()) {
+    $tutor_ids[] = $row['tutor_id'];
+}
+
+// 2. If no approved tutors, show message
+if (empty($tutor_ids)) {
+    echo '<p>No approved tutor modules available. Please apply and get approved by a tutor.</p>';
+} else {
+    // 3. Get tutor names for display (optional)
+    $tutor_ids_str = implode(',', array_map('intval', $tutor_ids));
+    $tutor_names = [];
+    $name_query = "SELECT user_id, first_name, last_name FROM users WHERE user_id IN ($tutor_ids_str)";
+    $name_result = $conn->query($name_query);
+    while ($row = $name_result->fetch_assoc()) {
+        $tutor_names[$row['user_id']] = $row['first_name'] . ' ' . $row['last_name'];
+    }
+
+    // 4. Show only modules uploaded by those tutors and approved
+    $query = "SELECT material_id, title, uploaded_by, approved_at, file_url, uploaded_by_id 
+              FROM learning_materials 
+              WHERE is_approved = 1 AND uploaded_by_id IN ($tutor_ids_str)
+              ORDER BY approved_at DESC";
+    $result = mysqli_query($conn, $query);
+
+    if (mysqli_num_rows($result) > 0) {
+        echo '<h2>Hello ' . htmlspecialchars($_SESSION['first_name']) . '</h2>';
+        echo '<div class="module-list">';
+        while ($row = mysqli_fetch_assoc($result)) {
+            echo '<div class="module-item">';
+            // Module Header
+            echo '<div class="module-header">';
+            echo '  <div class="module-user">';
+            echo '      <img src="Images/user-svgrepo-com.svg" alt="User Icon" class="module-user-icon">';
+            // Show tutor name from $tutor_names
+            echo '      <span class="module-user-name">' . htmlspecialchars($tutor_names[$row['uploaded_by_id']] ?? $row['uploaded_by']) . '</span>';
+            echo '      <img src="Images/verified.png" alt="Verified" class="module-verified-icon">';
+            echo '  </div>';
+            echo '  <div class="module-date">' . date("F j, Y", strtotime($row['approved_at'])) . '</div>';
+            echo '</div>';
+            // Module Body
+            echo '<div class="module-body">';
+            echo '  <div class="module-title">' . htmlspecialchars($row['title']) . '</div>';
+            echo '  <div class="module-actions">';
+            echo '      <a href="modules.php?file_url=' . urlencode($row['file_url']) . '" class="module-edit">View</a>';
+            echo '  </div>';
+            echo '</div>';
+            echo '</div>'; // .module-item
+        }
+        echo '</div>'; // .module-list
+    } else {
+        echo '<p>No materials found from your approved tutor(s).</p>';
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,96 +97,18 @@ session_start();
             <li><a href="calendar.php"><img src="Images/calendar-month-svgrepo-com.svg" alt="Calendar Icon"> Calendar</a></li>
             <li><a href="studentmodule.php"><img src="Images/book-svgrepo-com.svg" alt="Modules Icon"> Modules</a></li>
             <li><a href="tutorlist.php"><img src="Images/user-svgrepo-com.svg" alt="Tutors Icon"> Tutor</a></li>
-            <li><a href="progress.php"><img src="Images/progress-svgrepo-com.svg" alt="Progress Icon">Progress</a></li>
-
+           <!-- <li><a href="progress.php"><img src="Images/progress-svgrepo-com.svg" alt="Progress Icon">Progress</a></li>-->
             <li>
                 <a href="#" class="dropdown-toggle">-Option-</a>
                 <ul class="dropdown-menu">
-                    <li><a href="landingpage.php"><img src="Images/idea-svgrepo-com.svg" alt="Features Icon">Features</a></li>
-                    <li><a href="landingpage.php"><img src="Images/about-filled-svgrepo-com.svg" alt="About-Us Icon">About Us</a></li>
-                    <li><a href="settings.php"><img src="Images/settings-2-svgrepo-com.svg" alt="Settings Icon"> Settings</a></li>
+                    <li><a href="#features-section"><img src="Images/idea-svgrepo-com.svg" alt="Features Icon">Features</a></li>
+                    <li><a href="#about-us"><img src="Images/about-filled-svgrepo-com.svg" alt="About-Us Icon">About Us</a></li>
+                    <li><a href="#settings"><img src="Images/settings-2-svgrepo-com.svg" alt="Settings Icon"> Settings</a></li>
+                    <li><a href="logout.php"><img src="Images/logout-svgrepo-com.svg" alt="Logout Icon">Log out</a></li>
                 </ul>
             <li>
         </ul>
     </div>
-
-
-    <h2>Hello Student</h2>
-   <!--
-    <div style="text-align:center; margin-bottom: 24px;">
-        <button id="open-upload-box" class="upload-module-btn">Upload Module</button>
-    </div>
-    -->
-     <!-- Upload Box Modal 
-        <div id="upload-box-modal" class="upload-box-modal">
-            <div class="upload-box-content">
-                <h3 style="text-align:left; margin-top:0;">Good Day Tutor!</h3>
-                <p style="font-size:1rem; margin-bottom:18px; margin-top:0;">
-                Note: Use clear filenames (e.g., Lesson1_IntroToComputer.pdf) for easier tracking.
-                </p>
-                <form action="upload_material.php" method="POST" enctype="multipart/form-data">
-                <div class="upload-form-row">
-                    <label for="title">Title</label>
-                    <input type="text" id="title" name="title" placeholder="Ex: Introduction to computer">
-                </div>
-                <div class="upload-form-row">
-                    <label for="description">Description</label>
-                    <input type="text" id="description" name="description" placeholder="Please kindly apply to this course and learn about computer">
-                </div>
-                <div class="upload-form-row" style="justify-content:center;">
-                    <label for="file" class="custom-file-upload">
-                    <img src="Images/upload.png" alt="Upload Icon" style="width:200px; height:180px; display:block; margin:auto;">
-                    <div style="text-align:center; margin-top:8px;">Upload File (PDF)</div>
-                    </label>
-                    <input id="file" type="file" name="file" accept=".pdf" style="display:none;" require> 
-                </div>
-                <div style="text-align:center;">
-                    <button type="submit" class="upload-submit-btn">Upload</button>
-                </div>
-                </form>
-            </div>
-        </div>
-    -->
-    <!-- Module List Container -->
-    <?php
-    $query = "SELECT material_id, title, uploaded_by, approved_at, file_url FROM learning_materials WHERE is_approved = 1 ORDER BY approved_at DESC";
-
-    $result = mysqli_query($conn, $query);
-
-    if (mysqli_num_rows($result) > 0) {
-        echo '<div class="module-list">';
-        
-        while ($row = mysqli_fetch_assoc($result)) {
-            echo '<div class="module-item">';
-            
-            // Module Header
-            echo '<div class="module-header">';
-            echo '  <div class="module-user">';
-            echo '      <img src="Images/user-svgrepo-com.svg" alt="User Icon" class="module-user-icon">';
-            echo '      <span class="module-user-name">' . htmlspecialchars($row['uploaded_by']) . '</span>';
-            echo '      <img src="Images/verified.png" alt="Verified" class="module-verified-icon">';
-            echo '  </div>';
-            echo '  <div class="module-date">' . date("F j, Y", strtotime($row['approved_at'])) . '</div>';
-            echo '</div>';
-            
-            // Module Body
-            echo '<div class="module-body">';
-            echo '  <div class="module-title">' . htmlspecialchars($row['title']) . '</div>';
-            echo '  <div class="module-actions">';
-            echo '      <a href="modules.php?file_url=' . urlencode($row['file_url']) . '" class="module-edit">View</a>';
-            echo '      <a href="delete_module.php?id=' . $row['material_id'] . '" class="module-delete" onclick="return confirm(\'Are you sure you want to delete this?\');">Delete</a>';
-            echo '  </div>';
-            echo '</div>';
-
-            echo '</div>'; // .module-item
-        }
-
-        echo '</div>'; // .module-list
-    } else {
-        echo '<p>No materials found.</p>';
-    }
-    ?>
-
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
   <script>
     function toggleSidebar() {

@@ -304,9 +304,18 @@ if (isset($_POST['login'])) {
             </div>
         </div>
     </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
        <!-- Classix's Features -->
     <div class="features-section" >
         <h1>ClassXic's Features</h1>
+        <br>
+        <br>
+        <br>
        <div class="features-container" id="features-box">
             <div class="feature-box"
                  data-title="Customized Learning Management System"
@@ -348,6 +357,10 @@ if (isset($_POST['login'])) {
             </div>
         </div>
     </div>
+    <br>
+    <br>
+    <br>
+    <br>
     <div class="about-section" id="about-us">
         <div class="about-text">
             <h1>About Us.</h1>

@@ -35,7 +35,7 @@ $file_url = urldecode($_GET['file_url']);
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <ul>
-            <li><a href="#"><img src="Images/home-svgrepo-com.svg" alt="Home Icon"> Home</a></li>
+            <li><a href="landingpage.php"><img src="Images/home-svgrepo-com.svg" alt="Home Icon"> Home</a></li>
             <li><a href="#"><img src="Images/idea-svgrepo-com.svg" alt="Features Icon">Features</a></li>
             <li><a href="#"><img src="Images/about-filled-svgrepo-com.svg" alt="About-Us Icon">About Us</a></li>
             <li>
@@ -248,7 +248,6 @@ $file_url = urldecode($_GET['file_url']);
                     voiceSelect.appendChild(option);
                 });
             }
-            // Some browsers load voices asynchronously
             window.speechSynthesis.onvoiceschanged = populateVoices;
             populateVoices();
 
@@ -347,8 +346,12 @@ $file_url = urldecode($_GET['file_url']);
                 if (!currentWord) return;
                 const utterance = new SpeechSynthesisUtterance(currentWord);
                 utterance.lang = 'en-US';
-                const selectedVoice = voices[voiceSelect.value] || voices[0];
-                utterance.voice = selectedVoice;
+                let selectedVoiceIndex = voiceSelect.value;
+                if (selectedVoiceIndex === "" || !voices[selectedVoiceIndex]) {
+                    utterance.voice = voices[0];
+                } else {
+                    utterance.voice = voices[selectedVoiceIndex];
+                }
                 window.speechSynthesis.speak(utterance);
             });
 
@@ -366,6 +369,74 @@ $file_url = urldecode($_GET['file_url']);
             speedControl.addEventListener('input', () => {
                 speedValue.textContent = speedControl.value + 'x';
             });
+
+            // Show phonetic popup on hover
+            contentDiv.addEventListener('mouseover', async (event) => {
+                const target = event.target;
+                if (!target.classList.contains('word')) return;
+
+                currentWord = target.textContent;
+                popupWord.textContent = currentWord;
+                popupPhonetic.textContent = 'Loading...';
+                popupMeaning.textContent = 'Loading...';
+                popup.style.display = 'block';
+
+                // Position the popup beside the hovered word
+                const rect = target.getBoundingClientRect();
+                popup.style.top = `${rect.bottom + window.scrollY + 5}px`;
+                popup.style.left = `${rect.left + window.scrollX}px`;
+
+                // API call
+                try {
+                    const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(currentWord.toLowerCase())}`);
+                    if (!response.ok) throw new Error('No data found');
+                    const data = await response.json();
+                    const entry = data[0];
+                    popupPhonetic.textContent = entry.phonetic || '-';
+                    popupMeaning.textContent = entry.meanings[0]?.definitions[0]?.definition || 'No information found.';
+                } catch (e) {
+                    popupPhonetic.textContent = '-';
+                    popupMeaning.textContent = 'No information found.';
+                }
+            });
+
+            // Hide phonetic popup on mouseout, but NOT if moving to the popup
+            contentDiv.addEventListener('mouseout', (event) => {
+                const target = event.target;
+                if (!target.classList.contains('word')) return;
+                // If moving to the popup, don't hide
+                if (event.relatedTarget && popup.contains(event.relatedTarget)) return;
+                popup.style.display = 'none';
+            });
+
+            // Also hide the popup when mouse leaves the popup itself
+            popup.addEventListener('mouseleave', () => {
+                popup.style.display = 'none';
+            });
+
+            highlightNarrateBtn.addEventListener('click', () => {
+    // Find the currently highlighted word
+    const highlighted = document.querySelector('.word.tts-highlight');
+    let wordToSpeak = '';
+    if (highlighted) {
+        wordToSpeak = highlighted.textContent;
+    } else {
+        // Optionally, fallback to selected text
+        const selection = window.getSelection();
+        wordToSpeak = selection.toString().trim();
+    }
+    if (!wordToSpeak) return;
+
+    const utterance = new SpeechSynthesisUtterance(wordToSpeak);
+    utterance.lang = 'en-US';
+    let selectedVoiceIndex = voiceSelect.value;
+    if (selectedVoiceIndex === "" || !voices[selectedVoiceIndex]) {
+        utterance.voice = voices[0];
+    } else {
+        utterance.voice = voices[selectedVoiceIndex];
+    }
+    window.speechSynthesis.speak(utterance);
+});
         })();
 
         //burger

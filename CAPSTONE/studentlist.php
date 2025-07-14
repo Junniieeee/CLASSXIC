@@ -1,6 +1,31 @@
 <?php
 include "myconnector.php";
 session_start();
+
+echo '<div class="user-list-outer">';
+echo '<h2>Registered Students & Parents</h2>';
+
+$query = "SELECT user_id, first_name, last_name, email, role FROM users WHERE role IN ('student', 'parent') ORDER BY role, first_name";
+$result = $conn->query($query);
+
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        echo '<div class="user-card">';
+        echo '  <div class="user-card-name">';
+        echo '    <img src="Images/user-svgrepo-com.svg" alt="User Icon">';
+        echo '    <span>' . htmlspecialchars($row['first_name'] . ' ' . $row['last_name']) . '</span>';
+        echo '  </div>';
+        echo '  <div class="user-card-actions">';
+        echo '    <button class="user-card-btn invite-btn">Invite</button>';
+        echo '    <button class="user-card-btn view-btn">View</button>';
+        echo '    <span class="user-card-status">Status: Enrolled</span>';
+        echo '  </div>';
+        echo '</div>';
+    }
+} else {
+    echo '<p>No students or parents found.</p>';
+}
+echo '</div>';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -8,7 +33,7 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="tutormodule.css">
+    <link rel="stylesheet" href="studentlist.css">
 </head>
 <body>
   <!-- Navbar -->
@@ -34,14 +59,16 @@ session_start();
             <li><a href="tutorlanding.php"><img src="Images/home-svgrepo-com.svg" alt="Home Icon"> Home</a></li>
             <li><a href="tutorcalendar.php"><img src="Images/calendar-month-svgrepo-com.svg" alt="Calendar Icon"> Calendar</a></li>
             <li><a href="tutormodule.php"><img src="Images/book-svgrepo-com.svg" alt="Modules Icon"> Modules</a></li>
-            <li><a href="studentlist.php"><img src="Images/user-svgrepo-com.svg" alt="Tutors Icon"> Students</a></li>
-
+            <li><a href="studentlist.php"><img src="Images/user-svgrepo-com.svg" alt="Students Icon"> Students</a></li>
+           <!-- <li><a href="progress.php"><img src="Images/progress-svgrepo-com.svg" alt="Progress Icon">Progress</a></li>-->
             <li>
-                <a href="#" class="dropdown-toggle">Here</a>
+                <a href="#" class="dropdown-toggle">-Option-</a>
                 <ul class="dropdown-menu">
-                    <li><a href="#"><img src="Images/idea-svgrepo-com.svg" alt="Features Icon">Features</a></li>
-                    <li><a href="#"><img src="Images/about-filled-svgrepo-com.svg" alt="About-Us Icon">About Us</a></li>
-                    <li><a href="#"><img src="Images/settings-2-svgrepo-com.svg" alt="Settings Icon"> Settings</a></li>
+                    <li><a href="#features-section"><img src="Images/idea-svgrepo-com.svg" alt="Features Icon">Features</a></li>
+                    <li><a href="#about-us"><img src="Images/about-filled-svgrepo-com.svg" alt="About-Us Icon">About Us</a></li>
+                    <li><a href="#settings"><img src="Images/settings-2-svgrepo-com.svg" alt="Settings Icon"> Settings</a></li>
+                    <li><a href="logout.php"><img src="Images/logout-svgrepo-com.svg" alt="Logout Icon">Log out</a></li>
+                    <li><a href="tutor_applications.php"><img src="Images/applications-svgrepo-com.svg" alt="Applications Icon">Applications</a></li>
                 </ul>
             <li>
         </ul>
