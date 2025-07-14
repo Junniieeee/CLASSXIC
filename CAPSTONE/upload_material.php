@@ -5,7 +5,8 @@ session_start();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = $_POST['title'];
     $description = $_POST['description'];
-    $uploaded_by = 'tutor'; // Default for now
+    $uploaded_by = $_SESSION['first_name'] . ' ' . $_SESSION['last_name']; // or however you store the name
+    $uploaded_by_id = $_SESSION['user_id'];
     $upload_date = date('Y-m-d H:i:s');
     $is_approved = 1; // Default to approved
     $approved_by = 'admin'; // Default for now
@@ -23,9 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             move_uploaded_file($file_tmp, $file_url);
 
             // Insert into database
-            $query = "INSERT INTO learning_materials (title, description, file_url, uploaded_by, upload_date, is_approved, approved_by, approved_at)
-                      VALUES ('$title', '$description', '$file_url', '$uploaded_by', '$upload_date', '$is_approved', '$approved_by', '$approved_at')";
-            if (mysqli_query($conn, $query)) {
+            $stmt = $conn->prepare("INSERT INTO learning_materials (title, description, uploaded_by, uploaded_by_id, file_url, is_approved) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("sssisi", $title, $description, $uploaded_by, $uploaded_by_id, $file_url, $is_approved);
+
+            if ($stmt->execute()) {
                 header("Location: tutormodule.php?upload=success");
                 exit();
             } else {
