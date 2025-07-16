@@ -3,7 +3,10 @@ include "myconnector.php";
 session_start();
 
 echo '<div class="user-list-outer">';
+echo '<div style="display:flex; align-items:center; justify-content:space-between;">';
 echo '<h2>Registered Tutors</h2>';
+echo '<button id="openAppliedTutorsModal" class="view-applications-btn" style="margin-left:10px;">My Applications</button>';
+echo '</div>';
 
 $query = "SELECT user_id, first_name, last_name, email, role FROM users WHERE role IN ('tutor') ORDER BY role, first_name";
 $result = $conn->query($query);
@@ -22,10 +25,49 @@ if ($result && $result->num_rows > 0) {
         echo '</div>';
     }
 } else {
-    echo '<p>No students or parents found.</p>';
+    echo '<p>No tutors found.</p>';
 }
 echo '</div>';
 ?>
+
+<!-- Modal for "My Applications" -->
+<div id="appliedTutorsModal" style="
+    display:none;
+    position:fixed;
+    top:0; left:0;
+    width:100vw; height:100vh;
+    background:rgba(0,0,0,0.4);
+    z-index:9999;
+    align-items:center;
+    justify-content:center;
+">
+  <div style="
+      background:#fff;
+      padding:32px;
+      border-radius:8px;
+      max-width:900px;
+      width:90vw;
+      min-width:320px;
+      position:relative;
+      box-sizing:border-box;
+      overflow:auto;
+  ">
+    <button id="closeAppliedTutorsModal" style="position:absolute; top:12px; right:16px; font-size:24px; background:none; border:none; cursor:pointer;">&times;</button>
+    <iframe src="my_applied_tutors.php" style="width:100%; min-width:300px; height:70vh; border:none;"></iframe>
+  </div>
+</div>
+
+<script>
+document.getElementById('openAppliedTutorsModal').onclick = function() {
+    document.getElementById('appliedTutorsModal').style.display = 'flex';
+};
+document.getElementById('closeAppliedTutorsModal').onclick = function() {
+    document.getElementById('appliedTutorsModal').style.display = 'none';
+};
+document.getElementById('appliedTutorsModal').onclick = function(e) {
+    if (e.target === this) this.style.display = 'none';
+};
+</script>
 <!DOCTYPE html>
 <html lang="en">
 <head>

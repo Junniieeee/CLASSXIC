@@ -323,6 +323,59 @@ body {
   background: #b71c1c;
 }
 
+.view-applications-btn {
+    background: #FFD600; /* Ponkan yellow */
+    color: #222;
+    border: none;
+    border-radius: 15px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.view-applications-btn:hover {
+    background: #FFB300; /* Deeper yellow/orange on hover */
+    color: #fff;
+}
+.view-approved-btn {
+    background: #FFD600; /* Ponkan yellow */
+    color: #222;
+    border: none;
+    border-radius: 15px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin-left: 10px;
+}
+.view-approved-btn:hover {
+    background: #FFB300; /* Deeper yellow/orange on hover */
+    color: #fff;
+}
+
+/* Modal smooth open/close (shared for both modals) */
+#approvedModal, #applicationsModal {
+    display: flex;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+#approvedModal.active, #applicationsModal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+#approvedModal > div, #applicationsModal > div {
+    transform: translateY(-40px);
+    transition: transform 0.3s cubic-bezier(.4,2,.6,1);
+}
+#approvedModal.active > div, #applicationsModal.active > div {
+    transform: translateY(0);
+}
+
 @media  (max-width: 768px) {
     .sidebar{
     width: 250px;

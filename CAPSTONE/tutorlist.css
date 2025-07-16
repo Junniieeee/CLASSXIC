@@ -246,6 +246,23 @@ body {
   color: #222;
   font-family: 'OpenDyslexic', Arial, sans-serif;
 }
+.view-applications-btn {
+    background: #FFD600; /* Ponkan yellow */
+    color: #222;
+    border: none;
+    border-radius: 15px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin-left: 10px;
+}
+.view-applications-btn:hover {
+    background: #FFB300; /* Deeper yellow/orange on hover */
+    color: #fff;
+}
 
 @media  (max-width: 768px) {
     .sidebar{

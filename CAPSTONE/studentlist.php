@@ -3,7 +3,13 @@ include "myconnector.php";
 session_start();
 
 echo '<div class="user-list-outer">';
-echo '<h2>Registered Students & Parents</h2>';
+echo '<div style="display:flex; align-items:center; gap:12px; justify-content:space-between;">';
+echo '<h2>Registered Users</h2>';
+echo '<div>';
+echo '<button id="openApplicationsModal" class="view-applications-btn">View Applications</button> ';
+echo '<button id="openApprovedModal" class="view-approved-btn">View Approved Students</button>';
+echo '</div>';
+echo '</div>';
 
 $query = "SELECT user_id, first_name, last_name, email, role FROM users WHERE role IN ('student', 'parent') ORDER BY role, first_name";
 $result = $conn->query($query);
@@ -18,7 +24,6 @@ if ($result && $result->num_rows > 0) {
         echo '  <div class="user-card-actions">';
         echo '    <button class="user-card-btn invite-btn">Invite</button>';
         echo '    <button class="user-card-btn view-btn">View</button>';
-        echo '    <span class="user-card-status">Status: Enrolled</span>';
         echo '  </div>';
         echo '</div>';
     }
@@ -27,6 +32,92 @@ if ($result && $result->num_rows > 0) {
 }
 echo '</div>';
 ?>
+
+<!-- Modal for tutor applications -->
+<div id="applicationsModal" style="
+    display:none;
+    position:fixed;
+    top:0; left:0;
+    width:100vw; height:100vh;
+    background:rgba(0,0,0,0.4);
+    z-index:9999;
+    align-items:center;
+    justify-content:center;
+">
+  <div style="
+      background:#fff;
+      padding:32px;
+      border-radius:8px;
+      max-width:1200px;
+      width:95vw;
+      min-width:320px;
+      position:relative;
+      box-sizing:border-box;
+      overflow:auto;
+  ">
+    <button id="closeApplicationsModal" style="position:absolute; top:12px; right:16px; font-size:24px; background:none; border:none; cursor:pointer;">&times;</button>
+    <iframe src="tutor_applications.php" style="width:100%; min-width:300px; height:70vh; border:none;"></iframe>
+  </div>
+</div>
+
+<!-- Modal for approved/enrolled students -->
+<div id="approvedModal" style="
+    display:none;
+    position:fixed;
+    top:0; left:0;
+    width:100vw; height:100vh;
+    background:rgba(0,0,0,0.4);
+    z-index:9999;
+    align-items:center;
+    justify-content:center;
+">
+  <div style="
+      background:#fff;
+      padding:32px;
+      border-radius:8px;
+      max-width:900px;
+      width:90vw;
+      min-width:320px;
+      position:relative;
+      box-sizing:border-box;
+      overflow:auto;
+  ">
+    <button id="closeApprovedModal" style="position:absolute; top:12px; right:16px; font-size:24px; background:none; border:none; cursor:pointer;">&times;</button>
+    <iframe src="approved_students.php" style="width:100%; min-width:300px; height:70vh; border:none;"></iframe>
+  </div>
+</div>
+
+<script>
+document.getElementById('openApplicationsModal').onclick = function() {
+    document.getElementById('applicationsModal').classList.add('active');
+    document.getElementById('applicationsModal').style.display = 'flex';
+};
+document.getElementById('closeApplicationsModal').onclick = function() {
+    document.getElementById('applicationsModal').classList.remove('active');
+    document.getElementById('applicationsModal').style.display = 'none';
+};
+document.getElementById('applicationsModal').onclick = function(e) {
+    if (e.target === this) {
+        this.classList.remove('active');
+        this.style.display = 'none';
+    }
+};
+
+document.getElementById('openApprovedModal').onclick = function() {
+    document.getElementById('approvedModal').classList.add('active');
+    document.getElementById('approvedModal').style.display = 'flex';
+};
+document.getElementById('closeApprovedModal').onclick = function() {
+    document.getElementById('approvedModal').classList.remove('active');
+    document.getElementById('approvedModal').style.display = 'none';
+};
+document.getElementById('approvedModal').onclick = function(e) {
+    if (e.target === this) {
+        this.classList.remove('active');
+        this.style.display = 'none';
+    }
+};
+</script>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -68,7 +159,6 @@ echo '</div>';
                     <li><a href="#about-us"><img src="Images/about-filled-svgrepo-com.svg" alt="About-Us Icon">About Us</a></li>
                     <li><a href="#settings"><img src="Images/settings-2-svgrepo-com.svg" alt="Settings Icon"> Settings</a></li>
                     <li><a href="logout.php"><img src="Images/logout-svgrepo-com.svg" alt="Logout Icon">Log out</a></li>
-                    <li><a href="tutor_applications.php"><img src="Images/applications-svgrepo-com.svg" alt="Applications Icon">Applications</a></li>
                 </ul>
             <li>
         </ul>
