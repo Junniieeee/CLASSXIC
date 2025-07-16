@@ -44,8 +44,14 @@ if (isset($_POST['register'])) {
         $signup_error = "Username or email already exists.";
     } else {
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $conn->prepare("INSERT INTO users (username, role, first_name, last_name, email, password_hash, secret_key, contact_number, address, date_of_birth) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssssssss", $username, $role, $firstname, $lastname, $email, $password_hash, $secretkey, $phonenumber, $address, $birthday);
+        if ($role === 'tutor') {
+            $status = 'pending';
+        } else {
+            $status = 'approved';
+        }
+
+        $stmt = $conn->prepare("INSERT INTO users (username, role, first_name, last_name, email, password_hash, secret_key, contact_number, address, date_of_birth, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssssssssss", $username, $role, $firstname, $lastname, $email, $password_hash, $secretkey, $phonenumber, $address, $birthday, $status);
         if ($stmt->execute()) {
             $signup_success = "Registration successful! You can now log in.";
         } else {
@@ -60,28 +66,34 @@ if (isset($_POST['login'])) {
     $username = trim($_POST['username']);
     $password = $_POST['password'];
 
-    $stmt = $conn->prepare("SELECT user_id, username, password_hash, role, first_name FROM users WHERE username=?");
+    $stmt = $conn->prepare("SELECT user_id, username, password_hash, role, first_name, status FROM users WHERE username=?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $stmt->store_result();
     if ($stmt->num_rows == 1) {
-        $stmt->bind_result($user_id, $db_username, $db_password_hash, $role, $first_name);
+        $stmt->bind_result($user_id, $db_username, $db_password_hash, $role, $first_name, $status);
         $stmt->fetch();
         if (password_verify($password, $db_password_hash)) {
-            // Login success
             $_SESSION['user_id'] = $user_id;
             $_SESSION['username'] = $db_username;
             $_SESSION['role'] = $role;
             $_SESSION['first_name'] = $first_name;
+            $_SESSION['status'] = $status;
 
             if ($role === 'tutor') {
-                header("Location: tutorlanding.php"); // Redirect to tutor dashboard
+                if ($status === 'pending') {
+                    header("Location: tutor_pending.php"); // Show pending page
+                } elseif ($status === 'approved') {
+                    header("Location: tutorlanding.php"); // Tutor dashboard
+                } elseif ($status === 'rejected') {
+                    header("Location: tutor_rejected.php"); // Show rejection page
+                }
             } elseif ($role === 'parent') {
-                header("Location: landingpage.php"); // Redirect to parent dashboard
+                header("Location: landingpage.php");
             } elseif ($role === 'student') {
-                header("Location: landingpage.php"); // Redirect to student dashboard
+                header("Location: landingpage.php");
             } else {
-                header("Location: student_dashboard.php"); // Redirect to student dashboard
+                header("Location: student_dashboard.php");
             }
             exit();
         } else {
@@ -128,7 +140,10 @@ if (isset($_POST['login'])) {
                     build skills, and grow side by side —
                     because learning is better when we work as a team.
                 </p>
-                <button class="hire-button">Join Us!</button>
+                <button data-bs-toggle="modal" data-bs-target="#loginModal" class="hire-button">
+                    Join Us!
+                </button>
+
             </div>
             <div class="right-section">
                 <img src="Images/main.png" alt="Students learning together" class="students-image" />
@@ -297,9 +312,12 @@ if (isset($_POST['login'])) {
                     </form>
                 </div>
                 <div class="">
-                    <p class="text-center mb-4">
-                        If you don't have an account <a href="" data-bs-toggle="modal" data-bs-target="#roleModal">sign up here.</a>
-                    </p>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#roleModal">
+                        <p class="text-center mb-4">
+                            If you don't have an account <a href="" data-bs-toggle="modal" data-bs-target="#roleModal">sign up here.</a>
+                        </p>
+                    </a>
+                    
                 </div>
             </div>
         </div>

@@ -1,6 +1,17 @@
 <?php
 include "myconnector.php";
 session_start();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_id'])) {
+    $user_id = intval($_POST['user_id']);
+    if (isset($_POST['approve'])) {
+        $conn->query("UPDATE users SET status='approved' WHERE user_id=$user_id");
+    } elseif (isset($_POST['reject'])) {
+        $conn->query("UPDATE users SET status='rejected' WHERE user_id=$user_id");
+    }
+    header("Location: admin_applicants.php");
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -37,6 +48,46 @@ session_start();
      </ul>
   </div>
  
+  <div class="main-content" style="margin-left:260px; margin-top:50px; padding:32px;">
+    <h2>Applicants List</h2>
+    <div class="table-wrapper">
+      <table style="width:100%; border-collapse:collapse;">
+          <thead>
+              <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Contact Number</th>
+                  <th>Applied At</th>
+                  <th>Action</th>
+              </tr>
+          </thead>
+          <tbody>
+          <?php
+          $result = $conn->query("SELECT user_id, first_name, last_name, email, contact_number, created_at FROM users WHERE role='tutor' AND status='pending'");
+          if ($result && $result->num_rows > 0):
+              while ($row = $result->fetch_assoc()):
+          ?>
+              <tr>
+                  <td><?=htmlspecialchars($row['first_name'].' '.$row['last_name'])?></td>
+                  <td><?=htmlspecialchars($row['email'])?></td>
+                  <td><?=htmlspecialchars($row['contact_number'])?></td>
+                  <td><?=htmlspecialchars($row['created_at'])?></td>
+                  <td>
+                      <form method="post" style="display:inline;">
+                          <input type="hidden" name="user_id" value="<?=$row['user_id']?>">
+                          <button name="approve" class="btn btn-success btn-sm">Approve</button>
+                          <button name="reject" class="btn btn-danger btn-sm">Reject</button>
+                      </form>
+                  </td>
+              </tr>
+          <?php endwhile; else: ?>
+              <tr><td colspan="4">No pending tutor applicants.</td></tr>
+          <?php endif; ?>
+          </tbody>
+      </table>
+    </div>  
+</div>
+
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
   <script>
     function toggleSidebar() {
